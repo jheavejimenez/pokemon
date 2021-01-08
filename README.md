@@ -1,1 +1,1 @@
-this is an example of and ORM
+Django Admin Practice
