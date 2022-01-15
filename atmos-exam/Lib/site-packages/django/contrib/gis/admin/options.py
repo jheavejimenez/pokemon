@@ -55,12 +55,11 @@ class GeoModelAdmin(ModelAdmin):
         for viewing/editing 2D GeometryFields (OpenLayers 2 does not support
         3D editing).
         """
-        if isinstance(db_field, models.GeometryField) and db_field.dim < 3:
-            # Setting the widget with the newly defined widget.
-            kwargs['widget'] = self.get_map_widget(db_field)
-            return db_field.formfield(**kwargs)
-        else:
+        if not isinstance(db_field, models.GeometryField) or db_field.dim >= 3:
             return super().formfield_for_dbfield(db_field, request, **kwargs)
+        # Setting the widget with the newly defined widget.
+        kwargs['widget'] = self.get_map_widget(db_field)
+        return db_field.formfield(**kwargs)
 
     def get_map_widget(self, db_field):
         """

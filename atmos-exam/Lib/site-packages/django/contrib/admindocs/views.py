@@ -119,17 +119,15 @@ class ViewIndexView(BaseAdminDocsView):
     template_name = 'admin_doc/view_index.html'
 
     def get_context_data(self, **kwargs):
-        views = []
         urlconf = import_module(settings.ROOT_URLCONF)
         view_functions = extract_views_from_urlpatterns(urlconf.urlpatterns)
-        for (func, regex, namespace, name) in view_functions:
-            views.append({
+        views = [{
                 'full_name': get_view_name(func),
                 'url': simplify_regex(regex),
                 'url_name': ':'.join((namespace or []) + (name and [name] or [])),
                 'namespace': ':'.join(namespace or []),
                 'name': name,
-            })
+            } for (func, regex, namespace, name) in view_functions]
         return super().get_context_data(**{**kwargs, 'views': views})
 
 
@@ -330,10 +328,7 @@ class TemplateDetailView(BaseAdminDocsView):
             # This doesn't account for template loaders (#24128).
             for index, directory in enumerate(default_engine.dirs):
                 template_file = Path(directory) / template
-                if template_file.exists():
-                    template_contents = template_file.read_text()
-                else:
-                    template_contents = ''
+                template_contents = template_file.read_text() if template_file.exists() else ''
                 templates.append({
                     'file': template_file,
                     'exists': template_file.exists(),

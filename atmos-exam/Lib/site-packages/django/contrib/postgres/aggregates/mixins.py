@@ -20,18 +20,18 @@ class OrderableAggMixin:
         return super().resolve_expression(*args, **kwargs)
 
     def as_sql(self, compiler, connection):
-        if self.ordering:
-            ordering_params = []
-            ordering_expr_sql = []
-            for expr in self.ordering:
-                expr_sql, expr_params = compiler.compile(expr)
-                ordering_expr_sql.append(expr_sql)
-                ordering_params.extend(expr_params)
-            sql, sql_params = super().as_sql(compiler, connection, ordering=(
-                'ORDER BY ' + ', '.join(ordering_expr_sql)
-            ))
-            return sql, sql_params + ordering_params
-        return super().as_sql(compiler, connection, ordering='')
+        if not self.ordering:
+            return super().as_sql(compiler, connection, ordering='')
+        ordering_params = []
+        ordering_expr_sql = []
+        for expr in self.ordering:
+            expr_sql, expr_params = compiler.compile(expr)
+            ordering_expr_sql.append(expr_sql)
+            ordering_params.extend(expr_params)
+        sql, sql_params = super().as_sql(compiler, connection, ordering=(
+            'ORDER BY ' + ', '.join(ordering_expr_sql)
+        ))
+        return sql, sql_params + ordering_params
 
     def set_source_expressions(self, exprs):
         # Extract the ordering expressions because ORDER BY clause is handled

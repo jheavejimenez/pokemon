@@ -190,20 +190,19 @@ class TemplateCommand(BaseCommand):
         """
         if template is None:
             return os.path.join(django.__path__[0], 'conf', subdir)
+        if template.startswith('file://'):
+            template = template[7:]
+        expanded_template = os.path.expanduser(template)
+        expanded_template = os.path.normpath(expanded_template)
+        if os.path.isdir(expanded_template):
+            return expanded_template
+        if self.is_url(template):
+            # downloads the file and returns the path
+            absolute_path = self.download(template)
         else:
-            if template.startswith('file://'):
-                template = template[7:]
-            expanded_template = os.path.expanduser(template)
-            expanded_template = os.path.normpath(expanded_template)
-            if os.path.isdir(expanded_template):
-                return expanded_template
-            if self.is_url(template):
-                # downloads the file and returns the path
-                absolute_path = self.download(template)
-            else:
-                absolute_path = os.path.abspath(expanded_template)
-            if os.path.exists(absolute_path):
-                return self.extract(absolute_path)
+            absolute_path = os.path.abspath(expanded_template)
+        if os.path.exists(absolute_path):
+            return self.extract(absolute_path)
 
         raise CommandError("couldn't handle %s template %s." %
                            (self.app_or_project, template))
@@ -248,10 +247,7 @@ class TemplateCommand(BaseCommand):
         def cleanup_url(url):
             tmp = url.rstrip('/')
             filename = tmp.split('/')[-1]
-            if url.endswith('/'):
-                display_url = tmp + '/'
-            else:
-                display_url = url
+            display_url = tmp + '/' if url.endswith('/') else url
             return filename, display_url
 
         prefix = 'django_%s_template_' % self.app_or_project

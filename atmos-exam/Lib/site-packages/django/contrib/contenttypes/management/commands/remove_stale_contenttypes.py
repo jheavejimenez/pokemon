@@ -81,9 +81,8 @@ If you're unsure, answer 'no'.""" % content_type_display)
                         if verbosity >= 2:
                             self.stdout.write("Deleting stale content type '%s | %s'" % (ct.app_label, ct.model))
                         ct.delete()
-                else:
-                    if verbosity >= 2:
-                        self.stdout.write("Stale content types remain.")
+                elif verbosity >= 2:
+                    self.stdout.write("Stale content types remain.")
 
 
 class NoFastDeleteCollector(Collector):

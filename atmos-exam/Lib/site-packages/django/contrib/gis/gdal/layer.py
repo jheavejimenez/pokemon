@@ -56,7 +56,7 @@ class Layer(GDALBase):
         "Iterate over each Feature in the Layer."
         # ResetReading() must be called before iteration is to begin.
         capi.reset_reading(self._ptr)
-        for i in range(self.num_feat):
+        for _ in range(self.num_feat):
             yield Feature(capi.get_next_feature(self._ptr), self)
 
     def __len__(self):
@@ -170,7 +170,7 @@ class Layer(GDALBase):
         if isinstance(filter, OGRGeometry):
             capi.set_spatial_filter(self.ptr, filter.ptr)
         elif isinstance(filter, (tuple, list)):
-            if not len(filter) == 4:
+            if len(filter) != 4:
                 raise ValueError('Spatial filter list/tuple must have 4 elements.')
             # Map c_double onto params -- if a bad type is passed in it
             # will be caught here.

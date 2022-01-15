@@ -73,9 +73,8 @@ class ListMixin:
         "Get the item(s) at the specified index/slice."
         if isinstance(index, slice):
             return [self._get_single_external(i) for i in range(*index.indices(len(self)))]
-        else:
-            index = self._checkindex(index)
-            return self._get_single_external(index)
+        index = self._checkindex(index)
+        return self._get_single_external(index)
 
     def __delitem__(self, index):
         "Delete the item(s) at the specified index/slice."
@@ -134,7 +133,7 @@ class ListMixin:
             del self[:]
         else:
             cache = list(self)
-            for i in range(n - 1):
+            for _ in range(n - 1):
                 self.extend(cache)
         return self
 
@@ -168,15 +167,11 @@ class ListMixin:
     # ## Non-mutating ##
     def count(self, val):
         "Standard list count method"
-        count = 0
-        for i in self:
-            if val == i:
-                count += 1
-        return count
+        return sum(val == i for i in self)
 
     def index(self, val):
         "Standard list index method"
-        for i in range(0, len(self)):
+        for i in range(len(self)):
             if self[i] == val:
                 return i
         raise ValueError('%s not found in object' % val)
@@ -235,9 +230,10 @@ class ListMixin:
         raise IndexError('invalid index: %s' % index)
 
     def _check_allowed(self, items):
-        if hasattr(self, '_allowed'):
-            if False in [isinstance(val, self._allowed) for val in items]:
-                raise TypeError('Invalid type encountered in the arguments.')
+        if hasattr(self, '_allowed') and False in [
+            isinstance(val, self._allowed) for val in items
+        ]:
+            raise TypeError('Invalid type encountered in the arguments.')
 
     def _set_slice(self, index, values):
         "Assign values to a slice of the object"
@@ -303,8 +299,7 @@ class ListMixin:
                 if i == start:
                     yield from valueList
 
-                if i < origLen:
-                    if i < start or i >= stop:
-                        yield self._get_single_internal(i)
+                if i < origLen and (i < start or i >= stop):
+                    yield self._get_single_internal(i)
 
         self._rebuild(newLen, newItems())

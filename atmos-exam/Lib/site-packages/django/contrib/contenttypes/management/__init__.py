@@ -63,14 +63,10 @@ def inject_rename_contenttypes_operations(plan=None, apps=global_apps, using=DEF
 
     for migration, backward in plan:
         if (migration.app_label, migration.name) == ('contenttypes', '0001_initial'):
-            # There's no point in going forward if the initial contenttypes
-            # migration is unapplied as the ContentType model will be
-            # unavailable from this point.
             if backward:
                 break
-            else:
-                available = True
-                continue
+            available = True
+            continue
         # The ContentType model is not available yet.
         if not available:
             continue

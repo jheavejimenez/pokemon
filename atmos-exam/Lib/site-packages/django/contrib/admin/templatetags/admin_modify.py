@@ -22,16 +22,24 @@ def prepopulated_fields_js(context):
                 if inline_admin_form.original is None:
                     prepopulated_fields.extend(inline_admin_form.prepopulated_fields)
 
-    prepopulated_fields_json = []
-    for field in prepopulated_fields:
-        prepopulated_fields_json.append({
+    prepopulated_fields_json = [
+        {
             "id": "#%s" % field["field"].auto_id,
             "name": field["field"].name,
-            "dependency_ids": ["#%s" % dependency.auto_id for dependency in field["dependencies"]],
-            "dependency_list": [dependency.name for dependency in field["dependencies"]],
+            "dependency_ids": [
+                "#%s" % dependency.auto_id
+                for dependency in field["dependencies"]
+            ],
+            "dependency_list": [
+                dependency.name for dependency in field["dependencies"]
+            ],
             "maxLength": field["field"].field.max_length or 50,
-            "allowUnicode": getattr(field["field"].field, "allow_unicode", False)
-        })
+            "allowUnicode": getattr(
+                field["field"].field, "allow_unicode", False
+            ),
+        }
+        for field in prepopulated_fields
+    ]
 
     context.update({
         'prepopulated_fields': prepopulated_fields,
@@ -108,7 +116,7 @@ def cell_count(inline_admin_form):
     for fieldset in inline_admin_form:
         # Loop through all the fields (one per cell)
         for line in fieldset:
-            for field in line:
+            for _ in line:
                 count += 1
     if inline_admin_form.formset.can_delete:
         # Delete checkbox
