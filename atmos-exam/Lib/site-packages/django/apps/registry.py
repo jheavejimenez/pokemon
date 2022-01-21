@@ -85,10 +85,7 @@ class Apps:
 
             # Phase 1: initialize app configs and import app modules.
             for entry in installed_apps:
-                if isinstance(entry, AppConfig):
-                    app_config = entry
-                else:
-                    app_config = AppConfig.create(entry)
+                app_config = entry if isinstance(entry, AppConfig) else AppConfig.create(entry)
                 if app_config.label in self.app_configs:
                     raise ImproperlyConfigured(
                         "Application labels aren't unique, "

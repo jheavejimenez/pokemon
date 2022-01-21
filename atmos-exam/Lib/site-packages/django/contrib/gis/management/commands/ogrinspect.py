@@ -111,7 +111,7 @@ class Command(BaseCommand):
         # Filter options to params accepted by `_ogrinspect`
         ogr_options = {k: v for k, v in options.items()
                        if k in get_func_args(_ogrinspect) and v is not None}
-        output = [s for s in _ogrinspect(ds, model_name, **ogr_options)]
+        output = list(_ogrinspect(ds, model_name, **ogr_options))
 
         if options['mapping']:
             # Constructing the keyword arguments for `mapping`, and

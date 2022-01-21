@@ -235,10 +235,7 @@ class DatabaseCache(BaseDatabaseCache):
         connection = connections[db]
         quote_name = connection.ops.quote_name
 
-        if settings.USE_TZ:
-            now = datetime.utcnow()
-        else:
-            now = datetime.now()
+        now = datetime.utcnow() if settings.USE_TZ else datetime.now()
         now = now.replace(microsecond=0)
 
         with connection.cursor() as cursor:

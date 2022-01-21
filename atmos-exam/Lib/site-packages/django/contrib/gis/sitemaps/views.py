@@ -47,10 +47,7 @@ def kml(request, label, model, field_name=None, compress=False, using=DEFAULT_DB
             placemarks.append(mod)
 
     # Getting the render function and rendering to the correct.
-    if compress:
-        render = render_to_kmz
-    else:
-        render = render_to_kml
+    render = render_to_kmz if compress else render_to_kml
     return render('gis/kml/placemarks.kml', {'places': placemarks})
 
 

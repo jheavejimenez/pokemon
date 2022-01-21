@@ -105,13 +105,14 @@ class Serializer:
                     if field.remote_field is None:
                         if self.selected_fields is None or field.attname in self.selected_fields:
                             self.handle_field(obj, field)
-                    else:
-                        if self.selected_fields is None or field.attname[:-3] in self.selected_fields:
-                            self.handle_fk_field(obj, field)
+                    elif self.selected_fields is None or field.attname[:-3] in self.selected_fields:
+                        self.handle_fk_field(obj, field)
             for field in concrete_model._meta.local_many_to_many:
-                if field.serialize:
-                    if self.selected_fields is None or field.attname in self.selected_fields:
-                        self.handle_m2m_field(obj, field)
+                if field.serialize and (
+                    self.selected_fields is None
+                    or field.attname in self.selected_fields
+                ):
+                    self.handle_m2m_field(obj, field)
             self.end_object(obj)
             progress_bar.update(count)
             self.first = self.first and False

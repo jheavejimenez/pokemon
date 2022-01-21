@@ -95,17 +95,17 @@ class Command(BaseCommand):
             for migration in migrations_to_squash:
                 self.stdout.write(" - %s" % migration.name)
 
-            if self.interactive:
-                answer = None
-                while not answer or answer not in "yn":
-                    answer = input("Do you wish to proceed? [yN] ")
-                    if not answer:
-                        answer = "n"
-                        break
-                    else:
-                        answer = answer[0].lower()
-                if answer != "y":
-                    return
+        if self.interactive:
+            answer = None
+            while not answer or answer not in "yn":
+                answer = input("Do you wish to proceed? [yN] ")
+                if not answer:
+                    answer = "n"
+                    break
+                else:
+                    answer = answer[0].lower()
+            if answer != "y":
+                return
 
         # Load the operations from all those migrations and concat together,
         # along with collecting external dependencies and detecting

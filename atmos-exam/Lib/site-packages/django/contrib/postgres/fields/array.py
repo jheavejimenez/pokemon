@@ -169,12 +169,14 @@ class ArrayField(CheckFieldDefaultMixin, Field):
                     code='item_invalid',
                     params={'nth': index + 1},
                 )
-        if isinstance(self.base_field, ArrayField):
-            if len({len(i) for i in value}) > 1:
-                raise exceptions.ValidationError(
-                    self.error_messages['nested_array_mismatch'],
-                    code='nested_array_mismatch',
-                )
+        if (
+            isinstance(self.base_field, ArrayField)
+            and len({len(i) for i in value}) > 1
+        ):
+            raise exceptions.ValidationError(
+                self.error_messages['nested_array_mismatch'],
+                code='nested_array_mismatch',
+            )
 
     def run_validators(self, value):
         super().run_validators(value)

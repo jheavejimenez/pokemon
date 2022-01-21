@@ -282,6 +282,4 @@ class ASGIHandler(base.BaseHandler):
         """
         Return the script prefix to use from either the scope or a setting.
         """
-        if settings.FORCE_SCRIPT_NAME:
-            return settings.FORCE_SCRIPT_NAME
-        return scope.get('root_path', '') or ''
+        return settings.FORCE_SCRIPT_NAME or scope.get('root_path', '') or ''

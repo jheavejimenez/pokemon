@@ -346,7 +346,7 @@ class HashedFilesMixin:
             return cache_name
         # No cached name found, recalculate it from the files.
         intermediate_name = name
-        for i in range(self.max_post_process_passes + 1):
+        for _ in range(self.max_post_process_passes + 1):
             cache_name = self.clean_name(
                 self.hashed_name(name, content=None, filename=intermediate_name)
             )

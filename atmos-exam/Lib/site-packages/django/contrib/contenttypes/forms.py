@@ -31,9 +31,7 @@ class BaseGenericInlineFormSet(BaseModelFormSet):
         super().__init__(queryset=qs, data=data, files=files, prefix=prefix, **kwargs)
 
     def initial_form_count(self):
-        if self.save_as_new:
-            return 0
-        return super().initial_form_count()
+        return 0 if self.save_as_new else super().initial_form_count()
 
     @classmethod
     def get_default_prefix(cls):

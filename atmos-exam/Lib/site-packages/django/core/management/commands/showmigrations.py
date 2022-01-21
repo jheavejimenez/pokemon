@@ -128,9 +128,7 @@ class Command(BaseCommand):
 
         # Output
         def print_deps(node):
-            out = []
-            for parent in sorted(node.parents):
-                out.append("%s.%s" % parent.key)
+            out = ["%s.%s" % parent.key for parent in sorted(node.parents)]
             if out:
                 return " ... (%s)" % ", ".join(out)
             return ""

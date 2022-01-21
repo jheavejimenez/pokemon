@@ -32,11 +32,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        if options['username']:
-            username = options['username']
-        else:
-            username = getpass.getuser()
-
+        username = options['username'] or getpass.getuser()
         try:
             u = UserModel._default_manager.using(options['database']).get(**{
                 UserModel.USERNAME_FIELD: username
